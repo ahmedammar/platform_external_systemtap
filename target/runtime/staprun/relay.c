@@ -157,9 +157,9 @@ static void *reader_thread(void *data)
 	pollfd.events = POLLIN;
 
         do {
-		dbug(3, "thread %d start ppoll\n", cpu);
+		//dbug(3, "thread %d start ppoll\n", cpu);
                 rc = ppoll(&pollfd, 1, timeout, &sigs);
-		dbug(3, "thread %d end ppoll:%d\n", cpu, rc);
+		//dbug(3, "thread %d end ppoll:%d\n", cpu, rc);
                 if (rc < 0) {
 			dbug(3, "cpu=%d poll=%d errno=%d\n", cpu, rc, errno);
 			if (errno == EINTR) {

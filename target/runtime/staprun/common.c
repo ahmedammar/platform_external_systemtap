@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <string.h>
 
+//#include <syslog.h>
 
 /* variables needed by parse_args() */
 int verbose;
@@ -494,15 +495,17 @@ void eprintf(const char *fmt, ...)
 {
 	va_list va;
 	va_start(va, fmt);
+	/*
 	if (use_syslog)
 		vsyslog(LOG_ERR, fmt, va);
 	else
+		*/
 		vfprintf(stderr, fmt, va);
 	va_end(va);
 }
 
 void switch_syslog(const char *name)
 {
-	openlog(name, LOG_PID, LOG_DAEMON);
+	//openlog(name, LOG_PID, LOG_DAEMON);
 	use_syslog = 1;
 }

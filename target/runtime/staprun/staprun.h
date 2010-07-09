@@ -37,7 +37,8 @@
 #include <sys/statfs.h>
 #include <sys/syscall.h>
 #include <linux/version.h>
-#include <syslog.h>
+//#include <syslog.h>
+#include <cutils/log.h>
 
 /* Include config.h to pick up dependency for --prefix usage. */
 #include "config.h"
@@ -48,7 +49,7 @@
 extern void eprintf(const char *fmt, ...);
 extern void switch_syslog(const char *name);
 
-#define dbug(level, args...) do {if (verbose>=level) {eprintf("%s:%s:%d ",__name__,__FUNCTION__, __LINE__); eprintf(args);}} while (0)
+#define dbug(level, args...) do {LOGE("%s:%s:%d ",__name__,__FUNCTION__, __LINE__); LOGE(args);} while (0)
 
 extern char *__name__;
 
