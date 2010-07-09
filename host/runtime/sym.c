@@ -289,8 +289,11 @@ static int _stp_module_check(void)
 
 		    /* notes end address */
 		    if (!strcmp(m->name, "kernel")) {
+			    /*
 			  notes_addr = _stp_module_relocate("kernel",
 					 "_stext", m->build_id_offset, NULL);
+			  */
+			  notes_addr = m->build_id_offset;
 			  base_addr = _stp_module_relocate("kernel",
 							   "_stext", 0, NULL);
                     } else {

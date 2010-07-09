@@ -52,7 +52,7 @@ struct _stp_module {
 	unsigned long unwind_hdr_addr; /* same for .eh_frame_hdr */
 	/* build-id information */
 	unsigned char *build_id_bits;
-	unsigned long  build_id_offset;
+	unsigned long long  build_id_offset;
 	unsigned long  notes_sect;
 	int build_id_len;
 };

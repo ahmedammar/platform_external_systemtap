@@ -5068,7 +5068,7 @@ dump_unwindsyms (Dwfl_Module *m,
        correct either.  We may instead need a relocation basis different
        from _stext, such as __start_notes.  */
     if (modname == "kernel")
-      c->output << ".build_id_offset = 0x" << hex << build_id_vaddr - (base + extra_offset)
+      c->output << ".build_id_offset = 0x" << hex << build_id_vaddr
                 << dec << ",\n";
     else
       c->output << ".build_id_offset = 0x" << hex
