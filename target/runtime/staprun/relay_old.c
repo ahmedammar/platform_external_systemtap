@@ -350,6 +350,8 @@ static void *reader_thread(void *data)
 	/* Signal the main thread that we need to quit */
 	kill(getpid(), SIGTERM);
 	pthread_exit(NULL);
+
+	return NULL;
 }
 
 /**

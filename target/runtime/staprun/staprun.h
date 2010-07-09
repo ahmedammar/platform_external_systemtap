@@ -9,6 +9,9 @@
  *
  * Copyright (C) 2005-2008 Red Hat Inc.
  */
+#ifndef _STAPRUN_H_
+#define _STAPRUN_H_
+
 #define _FILE_OFFSET_BITS 64
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,6 +35,7 @@
 #include <linux/limits.h>
 #include <sys/wait.h>
 #include <sys/statfs.h>
+#include <sys/syscall.h>
 #include <linux/version.h>
 #include <syslog.h>
 
@@ -218,4 +222,33 @@ extern unsigned n_subbufs;
 
 extern int ppoll(struct pollfd *fds, nfds_t nfds,
 		 const struct timespec *timeout, const sigset_t *sigmask);
+#endif
+
+#ifndef HAVE_SCHED_SETAFFINITY
+
+/* many glibc's are not yet up to date */
+#ifndef __NR_sched_setaffinity
+#define __NR_sched_setaffinity 1231
+#endif
+
+/* Copied from glibc's <sched.h> and <bits/sched.h> and munged */
+#define CPU_SETSIZE	1024
+#define __NCPUBITS	(8 * sizeof (unsigned long))
+typedef struct
+{
+	unsigned long __bits[CPU_SETSIZE / __NCPUBITS];
+} cpu_set_t;
+
+#define CPU_SET(cpu, cpusetp) \
+	((cpusetp)->__bits[(cpu)/__NCPUBITS] |= (1UL << ((cpu) % __NCPUBITS)))
+#define CPU_ZERO(cpusetp) \
+	memset((cpusetp), 0, sizeof(cpu_set_t))
+
+static int
+sched_setaffinity(pid_t pid, size_t len, cpu_set_t const * cpusetp)
+{
+	return syscall(__NR_sched_setaffinity, pid, len, cpusetp);
+}
+#endif
+
 #endif

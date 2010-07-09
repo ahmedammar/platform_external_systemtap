@@ -21,8 +21,8 @@
  */
 
 #include "staprun.h"
+#include "glob.h"
 #include <sys/uio.h>
-#include <glob.h>
 
 
 
@@ -359,9 +359,9 @@ int send_relocation_kernel ()
       while (! feof(kallsyms) && !done_with_kallsyms)
         {
           char *line = NULL;
-          size_t linesz = 0;
-          ssize_t linesize = getline (& line, & linesz, kallsyms);
-          if (linesize < 0)
+          size_t linesize;
+	  line = fgetln (kallsyms, &linesize);
+          if (linesize == 0)
             break;
           else
             {
@@ -369,7 +369,8 @@ int send_relocation_kernel ()
               char type;
               char* symbol = NULL;
               int rc = sscanf (line, "%llx %c %as", &address, &type, &symbol);
-              free (line); line=NULL;
+              //free (line); line=NULL;
+	      line = NULL;
               if (symbol == NULL) continue; /* OOM? */
 
 #ifdef __powerpc64__

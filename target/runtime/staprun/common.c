@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <sys/utsname.h>
 #include <assert.h>
+#include <string.h>
 
 
 /* variables needed by parse_args() */
@@ -38,6 +39,25 @@ char *modpath = "";
 char *modoptions[MAXMODOPTIONS];
 
 int control_channel = -1; /* NB: fd==0 possible */
+
+char *rindex(const char *s, int c)
+{
+	register const char *found, *p;
+
+	c = (unsigned char) c;
+
+	if (c == '\0')
+		return strchr (s, '\0');
+
+	found = NULL;
+	while ((p = strchr (s, c)) != NULL)
+	{
+		found = p;
+		s = p + 1;
+	}
+
+	return (char *) found;
+}
 
 static char path_buf[PATH_MAX];
 static char *get_abspath(char *path)

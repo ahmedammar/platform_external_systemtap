@@ -13,8 +13,7 @@
 #include "staprun.h"
 #include <sys/utsname.h>
 #include <sys/ptrace.h>
-#include <wordexp.h>
-
+//#include <wordexp.h>
 
 #define WORKAROUND_BZ467568 1  /* PR 6964; XXX: autoconf when able */
 
@@ -25,6 +24,8 @@ static int use_old_transport = 0;
 //enum _stp_sig_type { sig_none, sig_done, sig_detach };
 //static enum _stp_sig_type got_signal = sig_none;
 
+int init_oldrelayfs() { return -1; }
+void close_oldrelayfs(int detach) {}
 
 static void *signal_thread(void *arg)
 {
@@ -151,12 +152,13 @@ void start_cmd(void)
   } else if (pid == 0) {
     /* We're in the target process.	 Let's start the execve of target_cmd, */
     int rc;
-    wordexp_t words;
+    //wordexp_t words;
     char *sh_c_argv[4] = { NULL, NULL, NULL, NULL };
 
     a.sa_handler = SIG_DFL;
     sigaction(SIGINT, &a, NULL);
 
+#if 0
     /* Formerly, we just execl'd(sh,-c,$target_cmd).  But this does't
        work well if target_cmd is a shell builtin.  We really want to
        probe a new child process, not a mishmash of shell-interpreted
@@ -168,10 +170,12 @@ void start_cmd(void)
            we use system(3) to evaluate 'stap -c CMD'.  We could generate
            an error message ... but let's just do what the user meant.
            rhbz 467652. */
+#endif
         sh_c_argv[0] = "sh";
         sh_c_argv[1] = "-c";
         sh_c_argv[2] = target_cmd;
         sh_c_argv[3] = NULL;
+#if 0
       }
     else
       {
@@ -188,6 +192,7 @@ void start_cmd(void)
           }
         if (words.we_wordc < 1) { _err ("empty -c COMMAND"); _exit (1); }
       }
+#endif
 
 /* PR 6964: when tracing all the user space process including the
    child the signal will be messed due to uprobe module or utrace
@@ -224,8 +229,7 @@ void start_cmd(void)
        $PATH search here; put the pause() afterward; and run a direct
        execve instead of execvp().  */
 
-    if (execvp ((sh_c_argv[0] == NULL ? words.we_wordv[0] : sh_c_argv[0]),
-                (sh_c_argv[0] == NULL ? words.we_wordv    : sh_c_argv)) < 0)
+    if (execvp (sh_c_argv[0], sh_c_argv) < 0)
       perror(target_cmd);
 
       /* (There is no need to wordfree() words; they are or will be gone.) */
@@ -280,6 +284,7 @@ static void read_buffer_info(void)
   if (!use_old_transport)
     return;
 
+#if 0
   if (statfs("/sys/kernel/debug", &st) == 0 && (int)st.f_type == (int)DEBUGFS_MAGIC)
     return;
 
@@ -301,6 +306,7 @@ static void read_buffer_info(void)
 
   dbug(2, "n_subbufs= %u, size=%u\n", n_subbufs, subbuf_size);
   close(fd);
+#endif
   return;
 }
 
@@ -508,7 +514,7 @@ int stp_main_loop(void)
     STAP_PROBE3(staprun, recv__ctlmsg, type, data, nb);
 
     switch (type) {
-#if STP_TRANSPORT_VERSION == 1
+#if 0// STP_TRANSPORT_VERSION == 1
     case STP_REALTIME_DATA:
       if (write_realtime_data(data, nb)) {
         _perr("write error (nb=%ld)", (long)nb);
