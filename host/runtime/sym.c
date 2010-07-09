@@ -124,6 +124,9 @@ static unsigned long _stp_module_relocate(const char *module,
 		    _stp_error("internal error, _stp_module_relocate '%s' "
 			       "section '%s', should not be tsk dynamic\n",
 			       module, section);
+                  if (strcmp("_stext", section) == 0)
+                      /* kernel module does not need task */
+                      return offset;
 		  return 0;
 		} else { /* dynamic section, look up through tsk vma. */
 		  if (strcmp(".dynamic", s->name) != 0) {
