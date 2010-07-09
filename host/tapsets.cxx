@@ -1055,7 +1055,7 @@ dwarf_query::add_probe_point(const string& funcname,
   if (module == TOK_KERNEL)
     {
       // PR 4224: adapt to relocatable kernel by subtracting the _stext address here.
-      reloc_addr = addr - sess.sym_stext;
+      reloc_addr = addr - (sess.sym_stext & ~0xFFFF);
       reloc_section = "_stext"; // a message to runtime's _stp_module_relocate
     }
 
@@ -3030,6 +3030,11 @@ dwarf_derived_probe::dwarf_derived_probe(const string& funcname,
       // of code, add it to the start of the probe.
       if (v.add_block)
         this->body = new block(v.add_block, this->body);
+
+      if (section == "_stext" && module == TOK_KERNEL) {
+        this->addr = dwfl_addr;
+        clog << "changing....addr to 0x" << hex << this->addr << endl;
+      }
 
       // If when target-variable-expanding the probe, we need to synthesize a
       // sibling function-entry probe.  We don't go through the whole probe derivation
