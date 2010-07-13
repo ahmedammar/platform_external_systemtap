@@ -1,0 +1,51 @@
+This is the porting version of SystemTap on Android.
+
+I split systemtap source code into two parts: host & target.
+Because for target running on Android system, we do not have glob, wordexp lib and rindex getline functions in bionic C library. But for host, we do not need to concern about this. They must have different changes.
+The target source code will be built when builing the whole android system. But the host, you need to build by yourself on the host PC.
+
+Build for HOST
+==================
+
+$ cd host
+$ ./configure --exec-prefix=<your perfered path> --prefix=<your perfered path> --with-elfutils=../elfutils-0.143
+$ make install
+
+
+Configure for TARGET
+====================
+
+You do not really need to do this, for the ./target directory has already configured.
+But if need to, do the following step:
+
+$ cd target
+$ ac_cv_file__usr_include_nspr=no ac_cv_file__usr_include_nspr4=no ac_cv_file__usr_include_nss=no ac_cv_file__usr_include_nss3=no ac_cv_func_malloc_0_nonnull=yes ./configure --exec-prefix=/systemtap-1.2-macharm --prefix=/systemtap-1.2-macharm --host=arm-none-linux-gnueabi CXXFLAGS=-static CFLAGS=-static --disable-translator --disable-docs --disable-refdocs --disable-grapher --without-rpm --with-elfutils=../elfutils-0.143
+
+
+Run SystemTap
+============
+
+- Write your own stap script
+
+- Build the stap .ko module
+
+Before doing stap, you should build a stap kernel module on HOST with systemtap host tool and Android kernel source code:
+
+@host$ cd <stap host path>/bin
+@host$ ./stap -gvvv -a arm -r <your android path>/kernel_imx/ -B CROSS_COMPILE=arm-none-linux-gnueabi- -m <stap name> <your stap script file>
+
+- Make module path link
+
+Staprun tool on target will load the stap .ko module under /lib/modules/<kernel label>/systemtap/, so all the stap kernel module built in the above step should be copy to this path, like: /lib/modules/2.6.31-00011-gec42f3e/systemtap/.
+But android put all the libs into /system/lib, thus make a directory under target: /system/lib/module/<kernel label>/systemtap/, and make symbol link:
+/lib -> /system/lib
+
+- staprun
+
+Loading the stap module on target:
+@target$ staprun <stap name>
+
+Attach it, and do stap:
+@target$ staprun -A <stap name>
+
+Then get your results.
