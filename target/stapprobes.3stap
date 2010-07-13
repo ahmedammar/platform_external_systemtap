@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.TH STAPPROBES 3stap 2010-07-09 "Red Hat"
+.TH STAPPROBES 3stap 2010-07-13 "Red Hat"
 .SH NAME
 stapprobes \- systemtap probe points
 

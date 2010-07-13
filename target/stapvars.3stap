@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.TH STAPVARS 3stap 2010-07-09 "Red Hat"
+.TH STAPVARS 3stap 2010-07-13 "Red Hat"
 .SH NAME
 stapvars \- systemtap variables
 
