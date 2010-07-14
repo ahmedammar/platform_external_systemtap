@@ -46,6 +46,12 @@ Loading the stap module on target:
 @target$ staprun <stap name>
 
 Attach it, and do stap:
-@target$ staprun -A <stap name>
+@target$ staprun -A <stap name> &
 
 Then get your results.
+
+
+NOTE
+====
+
+We do not support user space process probe, because UTRACE did not support ARM arch now.
