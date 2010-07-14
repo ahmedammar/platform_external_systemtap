@@ -22,6 +22,19 @@ $ cd target
 $ ac_cv_file__usr_include_nspr=no ac_cv_file__usr_include_nspr4=no ac_cv_file__usr_include_nss=no ac_cv_file__usr_include_nss3=no ac_cv_func_malloc_0_nonnull=yes ./configure --exec-prefix=/systemtap-1.2-macharm --prefix=/systemtap-1.2-macharm --host=arm-none-linux-gnueabi CXXFLAGS=-static CFLAGS=-static --disable-translator --disable-docs --disable-refdocs --disable-grapher --without-rpm --with-elfutils=../elfutils-0.143
 
 
+Kernel Configure
+================
+
+Before you can run stap host tool to generate a stap module, you should have your kernel configured and built.
+Select the following configure in kernel:
+* CONFIG_DEBUG_FS
+* CONFIG_KPROBES
+* CONFIG_DEBUG_INFO
+* CONFIG_RELAY
+* CONFIG_PROFILING
+Then build it.
+
+
 Run SystemTap
 ============
 
@@ -53,5 +66,10 @@ Then get your results.
 
 NOTE
 ====
-
 We do not support user space process probe, because UTRACE did not support ARM arch now.
+
+
+Reference
+=========
+http://omappedia.org/wiki/Systemtap
+http://www.ibm.com/developerworks/linux/library/l-systemtap/index.html
