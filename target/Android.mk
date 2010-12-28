@@ -16,7 +16,7 @@ LOCAL_SRC_FILES := \
 	runtime/staprun/relay.c
 
 LOCAL_SHARED_LIBRARIES := liblog
-
+LOCAL_MODULE_TAGS := optional
 include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
@@ -38,5 +38,5 @@ LOCAL_SRC_FILES := \
 	runtime/staprun/glob.c
 
 LOCAL_SHARED_LIBRARIES := liblog
-
+LOCAL_MODULE_TAGS := optional
 include $(BUILD_EXECUTABLE)
